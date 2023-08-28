@@ -1,0 +1,76 @@
+<div class="row">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" [routerLink]="['/Home']">100 best movies</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page"  [routerLink]="['/Home']">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-now" [ngClass]="{ 'disabled-link': isLinkDisabledPending }" [routerLink]="isLinkDisabledPending ? null : '/Pending'">Pending</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{ 'disabled-link': isLinkDisabledSeen }" [routerLink]="isLinkDisabledSeen ? null : '/Seen'">Seen</a>
+            </li>
+          </ul>
+          <form class="d-flex">
+            <input id="movieSearch" name="movieSearch" [(ngModel)]="movieSearch" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button (click)="searchMovie()" class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+  </div>
+<div class="row">
+<main class="col-md-8">
+    <div class="row modRow">
+        <ng-container *ngFor="let dato of movieTop | paginate: { itemsPerPage: 9, currentPage: p }">
+            <div class="caja d-flex col-md-3">
+            <div class="header_caja d-flex"><h3>{{dato.title}}</h3> <span  class="top">{{dato.id}}</span> </div>
+            <img (click)="movieId(dato.id)" src="{{dato.image}}" class="card-img-top imgTittle">
+            <div class="btn-option d-flex">
+                <span (click)="seen(dato.id)">Seen</span>
+            </div>
+            </div>            
+        </ng-container>
+        <div [class.d-none]="showDiv" id="zeroResults" class="d-flex col-md-3">
+          <p>No search results</p>
+      </div>
+      <div [class.d-none]="showDivPending" id="zeroResults" class="d-flex col-md-3">
+        <p>You have nothing pending</p>
+    </div>
+        <div class="modPagination">
+            <pagination-controls (pageChange)="p = $event" (click)="scrollToTop()"></pagination-controls>
+        </div>
+    </div>
+</main>
+<aside class="col-md-4">
+  <div id="parameter">
+    <h4>Search parameters</h4>
+    <div id="searchParameter">
+      <div class="form-check" *ngFor="let checkbox of checkboxes">
+        <input (change)="searchCategory()" class="form-check-input" type="checkbox" value="Drama" id="flexCheckDefault"  [(ngModel)]="checkbox.checked">
+        <label class="form-check-label" for="flexCheckDefault">
+          {{ checkbox.label }}
+        </label>
+      </div>
+    </div>
+    <p>Resultados: {{resultadosMovie}}</p>
+  </div>
+    <div class="caja d-flex cajaMod">
+        <div class="header_caja d-flex"><h3>{{movieDato[0].title}}</h3> <span class="top">{{movieDato[0].id}}</span> </div>
+        <img src="{{movieDato[0].image}}" class="card-img-top">
+        <div>
+            <p class="info d-flex"><span>Rating: {{movieDato[0].rating}}</span> <span>Year: {{movieDato[0].year}}</span></p>
+            <p>{{movieDato[0].description}}</p>
+            <div class="genero d-flex">
+                <span *ngFor="let genero of movieDato[0].genre">
+                    {{genero}}
+                </span>
+            </div>
+        </div>
+        </div>
+</aside>
+</div>
+
